@@ -2,7 +2,7 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
+import Button from '../components/Button';
 import PromptResponse from '../components/PromptResponse';
 
 const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details to Include", "Disability Details to Include", "Additional Details"];
@@ -34,7 +34,7 @@ const StartScreen = () => {
       <Container display="flex" flexDirection="column">
         {prompts.map((prompt, index) => (
           <div key={prompt}>
-            <Typography>{prompt}</Typography>
+            <Typography variant='h2'>{prompt}</Typography>
             <PromptResponse
               prompt={prompt}
               value={responses[index]}
@@ -46,15 +46,24 @@ const StartScreen = () => {
     );
   };
 
+  const DownloadButton = () => {
+    // handles logic for sending user input to gpt and going to edit screen
+    // TODO:
+    return (
+        <Button label='generate story'/>
+    )
+  }
+
   return (
-    <Container maxWidth="sm" style={{ marginTop: '100px' }}>
+    <Container maxWidth="sm" minHeight='100vh'>
       <Box display="flex">
         <Box style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '35%', overflowY: 'auto' }}>
           <Instructions />
         </Box>
         <Box style={{ marginLeft: '50%', width: '55%', overflowY: 'auto', display: 'flex', flexDirection: 'column'}}>
+          {/* TODO: add clear input button */}
           <StoryPrompts />
-          <Button sx={{ marginTop: 2 }} variant="contained">Generate Summary</Button>
+          <DownloadButton />
         </Box>
       </Box>
     </Container>

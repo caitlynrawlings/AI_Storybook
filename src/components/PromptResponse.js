@@ -22,11 +22,12 @@ const PromptResponse = ({ prompt, value, onChange }) => {
     <TextField
       id={prompt.replace(/\s+/g, '-').toLowerCase()}
       label={prompt}
-      variant="outlined"
+      variant="filled"
       value={textValue}
       onChange={handleInputChange}
       onBlur={handleInputBlur}
       onKeyDown={handleInputKeyPress}
+      inputProps={{ style: { background: 'white' } }}
     />
   );
 };
