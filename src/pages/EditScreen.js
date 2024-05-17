@@ -5,22 +5,29 @@ import Typography from '@mui/material/Typography';
 import Button from '../components/Button';
 import { useTheme } from '@mui/material/styles';
 
-
+// TODO: retrieve these values from the ai response
 const summary = "This is the summary";
 const explanation = "AI explanations on cultural and disability representation"
 const pages = ["This is page1 text", "This is page2 text"];
 
+// Returns the screen that has the AI output and places for user feedback and story iteration
+//
+// parameters:
+//      - numPages: int that is the number of pages in the story book
 const EditScreen = (numPages) => {
   const theme = useTheme();
-  const [edits, setEdits] = React.useState(Array(numPages).fill(''));
+  const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after
 
-  const handleResponseChange = (index, value) => {
+  const handleEditsChange = (index, value) => {
     const newEdits = [...edits];
     newEdits[index] = value;
     setEdits(newEdits);
   };
 
+  // TODO: implement clear edit function
+
   const Pages = () => {
+    // The text in the pages in the book
     return (
       <Container display="flex" padding='10vh' flexDirection="column">
         {pages.map((page, index) => (
@@ -66,6 +73,9 @@ const EditScreen = (numPages) => {
   }
 
   const AiResponse = ({label, response}) => {
+    // returns an ai response in the proper format and with a label
+    // label is string and is the label on top on the ai response box
+    // response is a string and is text that was outputed from the ai in response to prompts
     return (
         <Container>
             <Typography variant="h2" sx={{ padding: '10px'}}>

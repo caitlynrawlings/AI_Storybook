@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   typography: {
     h1: {
-      fontSize: '10vh',
+      fontSize: '10vh'
     },
     h2: {
       fontSize: '20px', fontWeight: 'bold'

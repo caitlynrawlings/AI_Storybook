@@ -5,10 +5,12 @@ import Typography from '@mui/material/Typography';
 import Button from '../components/Button';
 import PromptResponse from '../components/PromptResponse';
 
+// prompts about story for user to fill in
 const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details to Include", "Disability Details to Include", "Additional Details"];
 
+// Returns the first screen users see when using the app where the welcome message and initial prompts are
 const StartScreen = () => {
-  const [responses, setResponses] = React.useState(Array(prompts.length).fill(''));
+  const [responses, setResponses] = React.useState(Array(prompts.length).fill(''));  // user responses to prompts
 
   const handleResponseChange = (index, value) => {
     const newResponses = [...responses];
@@ -17,6 +19,7 @@ const StartScreen = () => {
   };
 
   const Instructions = () => {
+    // returns the instructions and welcome message
     return (
       <Container sx={{ paddingTop: '30vh' }} display="flex" flexDirection="column">
         <Typography variant="h1" fontSize={'10vh'}>
@@ -30,11 +33,12 @@ const StartScreen = () => {
   };
 
   const StoryPrompts = () => {
+    // returns all the prompts and response boxes
     return (
       <Container display="flex" flexDirection="column">
         {prompts.map((prompt, index) => (
           <div key={prompt}>
-            <Typography variant='h2'>{prompt}</Typography>
+            <Typography variant='h2' padding='10px'>{prompt}</Typography>
             <PromptResponse
               prompt={prompt}
               value={responses[index]}
@@ -46,7 +50,7 @@ const StartScreen = () => {
     );
   };
 
-  const DownloadButton = () => {
+  const GenerateStoryButton = () => {
     // handles logic for sending user input to gpt and going to edit screen
     // TODO:
     return (
@@ -55,7 +59,7 @@ const StartScreen = () => {
   }
 
   return (
-    <Container maxWidth="sm" minHeight='100vh'>
+    <Container maxWidth="sm" minheight='100vh'>
       <Box display="flex">
         <Box style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '35%', overflowY: 'auto' }}>
           <Instructions />
@@ -63,7 +67,7 @@ const StartScreen = () => {
         <Box style={{ marginLeft: '50%', width: '55%', overflowY: 'auto', display: 'flex', flexDirection: 'column'}}>
           {/* TODO: add clear input button */}
           <StoryPrompts />
-          <DownloadButton />
+          <GenerateStoryButton />
         </Box>
       </Box>
     </Container>
