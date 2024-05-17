@@ -2,6 +2,7 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { Button } from '@mui/material';
 import PromptResponse from '../components/PromptResponse';
 
 const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details to Include", "Disability Details to Include", "Additional Details"];
@@ -51,8 +52,9 @@ const StartScreen = () => {
         <Box style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '35%', overflowY: 'auto' }}>
           <Instructions />
         </Box>
-        <Box style={{ marginLeft: '50%', width: '55%', overflowY: 'auto' }}>
+        <Box style={{ marginLeft: '50%', width: '55%', overflowY: 'auto', display: 'flex', flexDirection: 'column'}}>
           <StoryPrompts />
+          <Button sx={{ marginTop: 2 }} variant="contained">Generate Summary</Button>
         </Box>
       </Box>
     </Container>
