@@ -4,12 +4,16 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '../components/Button';
 import PromptResponse from '../components/PromptResponse';
+import { useNavigate } from "react-router-dom";
 
 // prompts about story for user to fill in
 const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details to Include", "Disability Details to Include", "Additional Details"];
 
 // Returns the first screen users see when using the app where the welcome message and initial prompts are
 const StartScreen = () => {
+
+  const navigate = useNavigate()
+
   const [responses, setResponses] = React.useState(Array(prompts.length).fill(''));  // user responses to prompts
 
   const handleResponseChange = (index, value) => {
@@ -17,6 +21,10 @@ const StartScreen = () => {
     newResponses[index] = value;
     setResponses(newResponses);
   };
+
+  const navigateToEditScreen = () => {
+    navigate("/edit");
+  }
 
   const Instructions = () => {
     // returns the instructions and welcome message
@@ -54,7 +62,7 @@ const StartScreen = () => {
     // handles logic for sending user input to gpt and going to edit screen
     // TODO:
     return (
-        <Button label='generate story'/>
+        <Button onClick={navigateToEditScreen} label='generate story'/>
     )
   }
 
