@@ -1,7 +1,7 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-const PromptResponse = ({ prompt, value, onChange }) => {
+const PromptResponse = ({ sx, prompt, value, onChange }) => {
   const [textValue, setValue] = React.useState(value);
 
   const handleInputChange = (event) => {
@@ -20,6 +20,7 @@ const PromptResponse = ({ prompt, value, onChange }) => {
 
   return (
     <TextField
+      sx={{ ...sx }}
       id={prompt.replace(/\s+/g, '-').toLowerCase()}
       label={prompt}
       variant="filled"

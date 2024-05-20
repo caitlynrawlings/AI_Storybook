@@ -16,7 +16,7 @@ const pages = ["This is page1 text", "This is page2 text"];
 //      - numPages: int that is the number of pages in the story book
 const EditScreen = (numPages) => {
   const theme = useTheme();
-  const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after
+  const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after seeing story
 
   const handleEditsChange = (index, value) => {
     const newEdits = [...edits];
