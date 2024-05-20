@@ -3,6 +3,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '../components/Button';
+import ClearButton from '../components/ClearButton';
 import PromptResponse from '../components/PromptResponse';
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +14,6 @@ const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details t
 const StartScreen = () => {
 
   const navigate = useNavigate()
-
   const [responses, setResponses] = React.useState(Array(prompts.length).fill(''));  // user responses to prompts
 
   const handleResponseChange = (index, value) => {
@@ -22,9 +22,9 @@ const StartScreen = () => {
     setResponses(newResponses);
   };
 
-  const navigateToEditScreen = () => {
-    navigate("/edit");
-  }
+  const clearAllInputs = () => {
+    setResponses(Array(prompts.length).fill(''));
+  };
 
   const Instructions = () => {
     // returns the instructions and welcome message
@@ -60,7 +60,10 @@ const StartScreen = () => {
 
   const GenerateStoryButton = () => {
     // handles logic for sending user input to gpt and going to edit screen
-    // TODO:
+    const navigateToEditScreen = () => {
+      navigate("/edit");
+    }
+
     return (
         <Button onClick={navigateToEditScreen} label='generate story'/>
     )
@@ -73,7 +76,7 @@ const StartScreen = () => {
           <Instructions />
         </Box>
         <Box style={{ marginLeft: '50%', width: '55%', overflowY: 'auto', display: 'flex', flexDirection: 'column'}}>
-          {/* TODO: add clear input button */}
+          <ClearButton onClick={clearAllInputs} label="clear all inputs"/>
           <StoryPrompts />
           <GenerateStoryButton />
         </Box>

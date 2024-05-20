@@ -4,6 +4,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '../components/Button';
 import { useTheme } from '@mui/material/styles';
+import PDFDocument from '../components/PDFDocument';
+import { pdf } from '@react-pdf/renderer';
+import { saveAs } from 'file-saver';
+import { useNavigate } from "react-router-dom";
 
 // TODO: retrieve these values from the ai response
 const summary = "This is the summary";
@@ -15,6 +19,8 @@ const pages = ["This is page1 text", "This is page2 text"];
 // parameters:
 //      - numPages: int that is the number of pages in the story book
 const EditScreen = (numPages) => {
+
+  const navigate = useNavigate()
   const theme = useTheme();
   const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after
 
@@ -58,17 +64,33 @@ const EditScreen = (numPages) => {
 
   const DownloadButton = () => {
     // handles logic downloading story pdf
-    // TODO:
+    const createAndDownloadPDF = async () => {
+      try {
+        const doc = <PDFDocument pageContents={pages}/>;
+        const asPdf = pdf([]); // {} is important, throws without an argument
+        asPdf.updateContainer(doc);
+        const blob = await asPdf.toBlob();
+        saveAs(blob, 'story.pdf');
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+      }
+    };
+
     return (
-        <Button label='download'/>
+      <div>
+        <Button onClick={createAndDownloadPDF} label='download'/>
+      </div>
     )
   }
 
   const StartNewStoryButton = () => {
     // goes to start screen
-    // TODO:
+    const navigateToHomeScreen = () => {
+      navigate("/");
+    }
+
     return (
-        <Button label='start new story'/>
+        <Button onClick={navigateToHomeScreen} label='start new story'/>
     )
   }
 

@@ -20,7 +20,10 @@ const theme = createTheme({
     button1: {
       main: '#CEFFB9',
     },
-  }
+    button2: {
+      main: '#FFFFFF',
+    },
+  },
 });
 
 export default theme;
