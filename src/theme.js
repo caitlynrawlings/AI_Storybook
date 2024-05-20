@@ -12,7 +12,7 @@ const theme = createTheme({
       fontWeight: 'bold',
     }
   },
-  // TODO: Find colors that work with the buttons
+  // TODO: Find colors that work with the buttons hover
   palette: {
     primary: {
       main: '#ECDDFF',
