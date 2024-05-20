@@ -1,10 +1,12 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
-// pdf-renderer is not compatiable with MUI themes so define custm
+// PDF-renderer is not compatiable with MUI themes so define custom style
 const styles = StyleSheet.create({
     section: { textAlign: 'center', margin: 50 }
 });
 
+// Generates a page for each of the elements in pageContents to create
+// single PDF document.
 const PDFDocument = ({ pageContents }) => {
     return (
         <Document>

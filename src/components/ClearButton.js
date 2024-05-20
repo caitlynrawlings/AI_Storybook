@@ -2,6 +2,7 @@ import { Button as MuiButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ClearIcon from '@mui/icons-material/Clear';
 
+// Clear button with icon used to clear all input selections.
 const ClearButton = ({ onClick, label }) => {
     const theme = useTheme();
 

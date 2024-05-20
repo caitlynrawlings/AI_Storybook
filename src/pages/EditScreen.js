@@ -90,7 +90,7 @@ const EditScreen = (numPages) => {
     }
 
     return (
-        <Button label='start new story'/>
+        <Button onClick={navigateToHomeScreen} label='start new story'/>
     )
   }
 
