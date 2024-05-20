@@ -8,10 +8,6 @@ const PromptResponse = ({ sx, prompt, value, onChange }) => {
     setValue(event.target.value);
   };
 
-  const handleInputBlur = () => {
-    onChange(textValue)
-  };
-
   const handleInputKeyPress = (event) => {
     if (event.key === 'Enter') {
         onChange(textValue)
@@ -20,15 +16,17 @@ const PromptResponse = ({ sx, prompt, value, onChange }) => {
 
   return (
     <TextField
-      sx={{ ...sx }}
+      sx={{ ...sx, backgroundColor: 'white' }}
       id={prompt.replace(/\s+/g, '-').toLowerCase()}
-      label={prompt}
-      variant="filled"
+      multiline
+      variant="outlined"
       value={textValue}
       onChange={handleInputChange}
-      onBlur={handleInputBlur}
       onKeyDown={handleInputKeyPress}
-      inputProps={{ style: { background: 'white' } }}
+      placeholder={prompt}
+      InputLabelProps={{
+        shrink: false,
+      }}
     />
   );
 };

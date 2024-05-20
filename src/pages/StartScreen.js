@@ -46,11 +46,10 @@ const StartScreen = () => {
       <Container display="flex" flexDirection="column">
         {prompts.map((prompt, index) => (
           <div key={prompt}>
-            <Typography variant='h2' paddingBottom='10px' paddingTop='10px'>{prompt}</Typography>
+            <Typography variant='h2' paddingBottom='10px' paddingTop='30px'>{prompt}</Typography>
             <PromptResponse
               sx={{ 
                 width: '100%',
-                paddingBottom: '20px',
                }}
               prompt={prompt}
               value={responses[index]}
@@ -78,7 +77,7 @@ const StartScreen = () => {
       <Box sx={{ display: 'flex', width: '65%', overflowY: 'auto', flexDirection: 'column',  alignItems: 'flex-start', marginTop: '20px', marginBottom: '40px', }}>
         {/* TODO: add clear input button */}
         <StoryPrompts sx={{ width: '100%' }}/>
-        <GenerateStoryButton sx={{ flexGrow: 0, marginTop: '10px' }}/>
+        <GenerateStoryButton sx={{ flexGrow: 0, marginTop: '30px' }}/>
       </Box>
     </Box>
   );
