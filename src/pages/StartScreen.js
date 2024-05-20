@@ -46,8 +46,11 @@ const StartScreen = () => {
       <Container display="flex" flexDirection="column">
         {prompts.map((prompt, index) => (
           <div key={prompt}>
-            <Typography variant='h2' padding='10px'>{prompt}</Typography>
+            <Typography variant='h2' paddingBottom='10px' paddingTop='30px'>{prompt}</Typography>
             <PromptResponse
+              sx={{
+                width: '100%',
+               }}
               prompt={prompt}
               value={responses[index]}
               onChange={(textValue) => handleResponseChange(index, textValue)}
@@ -58,30 +61,28 @@ const StartScreen = () => {
     );
   };
 
-  const GenerateStoryButton = () => {
+  const GenerateStoryButton = ({ sx }) => {
     // handles logic for sending user input to gpt and going to edit screen
     const navigateToEditScreen = () => {
       navigate("/edit");
     }
 
     return (
-        <Button onClick={navigateToEditScreen} label='generate story'/>
+        <Button sx={{...sx}} onClick={navigateToEditScreen} label='generate story'/>
     )
   }
 
   return (
-    <Container maxWidth="sm" minheight='100vh'>
-      <Box display="flex">
-        <Box style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '35%', overflowY: 'auto' }}>
-          <Instructions />
-        </Box>
-        <Box style={{ marginLeft: '50%', width: '55%', overflowY: 'auto', display: 'flex', flexDirection: 'column'}}>
-          <ClearButton onClick={clearAllInputs} label="clear all inputs"/>
-          <StoryPrompts />
-          <GenerateStoryButton />
-        </Box>
+    <Box sx={{ display: 'flex', flexDirection: 'row'}}>
+      <Box sx={{ display: 'flex', width: '35%', overflowY: 'auto' }}>
+        <Instructions />
       </Box>
-    </Container>
+      <Box sx={{ display: 'flex', width: '65%', overflowY: 'auto', flexDirection: 'column',  alignItems: 'flex-start', marginTop: '20px', marginBottom: '40px', }}>
+        <ClearButton onClick={clearAllInputs} label="clear all inputs"/>
+        <StoryPrompts sx={{ width: '100%' }}/>
+        <GenerateStoryButton sx={{ flexGrow: 0, marginTop: '30px' }}/>
+      </Box>
+    </Box>
   );
 };
 

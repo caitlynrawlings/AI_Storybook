@@ -1,15 +1,11 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-const PromptResponse = ({ prompt, value, onChange }) => {
+const PromptResponse = ({ sx, prompt, value, onChange }) => {
   const [textValue, setValue] = React.useState(value);
 
   const handleInputChange = (event) => {
     setValue(event.target.value);
-  };
-
-  const handleInputBlur = () => {
-    onChange(textValue)
   };
 
   const handleInputKeyPress = (event) => {
@@ -20,14 +16,17 @@ const PromptResponse = ({ prompt, value, onChange }) => {
 
   return (
     <TextField
+      sx={{ ...sx, backgroundColor: 'white' }}
       id={prompt.replace(/\s+/g, '-').toLowerCase()}
-      label={prompt}
-      variant="filled"
+      multiline
+      variant="outlined"
       value={textValue}
       onChange={handleInputChange}
-      onBlur={handleInputBlur}
       onKeyDown={handleInputKeyPress}
-      inputProps={{ style: { background: 'white' } }}
+      placeholder={prompt}
+      InputLabelProps={{
+        shrink: false,
+      }}
     />
   );
 };

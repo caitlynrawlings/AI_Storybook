@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 // TODO: retrieve these values from the ai response
 const summary = "This is the summary";
-const explanation = "AI explanations on cultural and disability representation"
+const explanation = "AI explanations on cultural and disability representation";
 const pages = ["This is page1 text", "This is page2 text"];
 
 // Returns the screen that has the AI output and places for user feedback and story iteration
@@ -22,7 +22,7 @@ const EditScreen = (numPages) => {
 
   const navigate = useNavigate()
   const theme = useTheme();
-  const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after
+  const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after seeing story
 
   const handleEditsChange = (index, value) => {
     const newEdits = [...edits];
@@ -32,37 +32,37 @@ const EditScreen = (numPages) => {
 
   // TODO: implement clear edit function
 
-  const Pages = () => {
+  const Pages = ({ sx }) => {
     // The text in the pages in the book
     return (
-      <Container display="flex" padding='10vh' flexDirection="column">
+      <Box sx={{ width: '100%', ...sx }}>
         {pages.map((page, index) => (
-          <div key={page}>
-            <AiResponse label={`Page ${index + 1}`} response={pages[index]}/>
+          <Box sx={{ width: '100%' }} key={index}>
+            <AiResponse sx={{ width: '100%' }} label={`Page ${index + 1}`} response={page} />
             <EditButton />
-          </div>
+          </Box>
         ))}
-      </Container>
+      </Box>
     );
   };
 
-  const EditButton = () => {
+  const EditButton = ({ sx }) => {
     // handles the edit logic like the input box populating and the close button?
     // TODO:
     return (
-        <Button label='edit'/>
-    )
-  }
+      <Button sx={{ ...sx }} label='edit' />
+    );
+  };
 
-  const ApplyEditsButton = () => {
+  const ApplyEditsButton = ({ sx }) => {
     // handles logic for sending edits to gpt and refreshes page based on results
     // TODO:
     return (
-        <Button label='apply edits to story'/>
-    )
-  }
+      <Button sx={{ ...sx }} label='apply edits to story' />
+    );
+  };
 
-  const DownloadButton = () => {
+  const DownloadButton = ({ sx }) => {
     // handles logic downloading story pdf
     const createAndDownloadPDF = async () => {
       try {
@@ -78,53 +78,51 @@ const EditScreen = (numPages) => {
 
     return (
       <div>
-        <Button onClick={createAndDownloadPDF} label='download'/>
+      <Button sx={{ ...sx }} onClick={createAndDownloadPDF} label='download' />
       </div>
-    )
-  }
+    );
+  };
 
-  const StartNewStoryButton = () => {
+  const StartNewStoryButton = ({ sx }) => {
     // goes to start screen
     const navigateToHomeScreen = () => {
       navigate("/");
     }
 
     return (
-        <Button onClick={navigateToHomeScreen} label='start new story'/>
+        <Button label='start new story'/>
     )
   }
 
-  const AiResponse = ({label, response}) => {
+  const AiResponse = ({ sx, label, response }) => {
     // returns an ai response in the proper format and with a label
     // label is string and is the label on top on the ai response box
-    // response is a string and is text that was outputed from the ai in response to prompts
+    // response is a string and is text that was outputted from the ai in response to prompts
     return (
-        <Container>
-            <Typography variant="h2" sx={{ padding: '10px'}}>
-                {label}
-            </Typography>
-            <Typography variant="body1" sx={{ backgroundColor: theme.palette.secondary.main, padding: '10px', borderRadius: '10px' }}>
-                {response}
-            </Typography>
-        </Container>
+      <Box sx={{ ...sx, textAlign: 'left', width: '100%' }}>
+        <Typography variant="h2" sx={{ paddingBottom: '10px', paddingTop: '20px' }}>
+          {label}
+        </Typography>
+        <Typography variant="body1" sx={{ width: '100%', backgroundColor: theme.palette.secondary.main, padding: '10px', marginBottom: '10px', borderRadius: '10px' }}>
+          {response}
+        </Typography>
+      </Box>
     );
   };
 
   return (
-    <Container maxWidth="md" style={{ position: 'relative' }}>
-      <Box display="flex" flexDirection='column' alignItems="flex-start" textAlign='left'>
-        <Typography variant='h1'>
-            AI-Generated Story
-        </Typography>
-        <AiResponse label='Summary' response={summary}/>
-        <EditButton />
-        <AiResponse label='Explanation' response={explanation}/>
-        <Pages />
-        <Box height='10vh'/>
-        <ApplyEditsButton />
-        <DownloadButton />
-        <StartNewStoryButton />
-      </Box>
+    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vw', paddingRight: '10vw', paddingBottom: '40px', paddingTop: '30px', width: '100%' }}>
+      <Typography variant='h1'>
+        AI-Generated Story
+      </Typography>
+      <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
+      <EditButton />
+      <AiResponse sx={{ width: '100%' }} label='Explanation' response={explanation} />
+      <Pages sx={{ width: '100%', paddingTop: '20px' }} />
+      <Box height='10vh' />
+      <ApplyEditsButton />
+      <DownloadButton sx={{ marginTop: '20px' }} />
+      <StartNewStoryButton sx={{ marginTop: '20px' }} />
     </Container>
   );
 };
