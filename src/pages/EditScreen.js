@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { pdf } from '@react-pdf/renderer';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '../components/Button';
 import { useTheme } from '@mui/material/styles';
+import Button from '../components/Button';
+import ClearButton from '../components/ClearButton';
+import PromptResponse from '../components/PromptResponse';
 import PDFDocument from '../components/PDFDocument';
-import { pdf } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
 import { useNavigate } from "react-router-dom";
 
@@ -39,18 +41,42 @@ const EditScreen = (numPages) => {
         {pages.map((page, index) => (
           <Box sx={{ width: '100%' }} key={index}>
             <AiResponse sx={{ width: '100%' }} label={`Page ${index + 1}`} response={page} />
-            <EditButton />
+            <EditButton promptSection={`page ${index + 1}`}/>
           </Box>
         ))}
       </Box>
     );
   };
 
-  const EditButton = ({ sx }) => {
-    // handles the edit logic like the input box populating and the close button?
-    // TODO:
+  const EditButton = ({ index, handleEditsChange, sx, promptSection }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const prompt = `Enter modification prompts for ${promptSection}.`;
+
+    const handleEditClick = () => {
+      setIsEditing(true);
+    };
+
+    const handleSaveClick = () => {
+      // handleEditsChange(index, editValue);
+      setIsEditing(false);
+    };
+
     return (
-      <Button sx={{ ...sx }} label='edit' />
+      <Box sx={{ ...sx }}>
+        {isEditing ? (
+          <Box>
+            <PromptResponse
+                sx={{ width: '100%', mb: '5px' }}
+                prompt={prompt}
+                value={edits[index]}
+                onChange={(textValue) => handleEditsChange(index, textValue)}
+            />
+            <ClearButton onClick={handleSaveClick} label="clear" />
+          </Box>
+        ) : (
+          <Button onClick={handleEditClick} label="edit" />
+        )}
+      </Box>
     );
   };
 
@@ -66,7 +92,7 @@ const EditScreen = (numPages) => {
     // handles logic downloading story pdf
     const createAndDownloadPDF = async () => {
       try {
-        const doc = <PDFDocument pageContents={pages}/>;
+        const doc = <PDFDocument pageContents={pages} />;
         const asPdf = pdf([]); // {} is important, throws without an argument
         asPdf.updateContainer(doc);
         const blob = await asPdf.toBlob();
@@ -78,7 +104,7 @@ const EditScreen = (numPages) => {
 
     return (
       <div>
-      <Button sx={{ ...sx }} onClick={createAndDownloadPDF} label='download' />
+        <Button sx={{ ...sx }} onClick={createAndDownloadPDF} label='download' />
       </div>
     );
   };
@@ -90,7 +116,7 @@ const EditScreen = (numPages) => {
     }
 
     return (
-        <Button onClick={navigateToHomeScreen} label='start new story'/>
+      <Button onClick={navigateToHomeScreen} label='start new story' />
     )
   }
 
@@ -116,7 +142,7 @@ const EditScreen = (numPages) => {
         AI-Generated Story
       </Typography>
       <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
-      <EditButton />
+      <EditButton promptSection='summary' sx={{ width: '100%'}}/>
       <AiResponse sx={{ width: '100%' }} label='Explanation' response={explanation} />
       <Pages sx={{ width: '100%', paddingTop: '20px' }} />
       <Box height='10vh' />
