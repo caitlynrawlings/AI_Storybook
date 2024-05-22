@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { pdf } from '@react-pdf/renderer';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -7,8 +6,8 @@ import { useTheme } from '@mui/material/styles';
 import Button from '../components/Button';
 import ClearButton from '../components/ClearButton';
 import PromptResponse from '../components/PromptResponse';
-import PDFDocument from '../components/PDFDocument';
 import { saveAs } from 'file-saver';
+import { Packer, Document, TextRun, Paragraph } from 'docx';
 import { useNavigate } from "react-router-dom";
 
 // TODO: retrieve these values from the ai response
@@ -90,21 +89,27 @@ const EditScreen = (numPages) => {
 
   const DownloadButton = ({ sx }) => {
     // handles logic downloading story pdf
-    const createAndDownloadPDF = async () => {
-      try {
-        const doc = <PDFDocument pageContents={pages} />;
-        const asPdf = pdf([]); // {} is important, throws without an argument
-        asPdf.updateContainer(doc);
-        const blob = await asPdf.toBlob();
-        saveAs(blob, 'story.pdf');
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-      }
-    };
+    const createAndDownloadDocument = async () => {
+
+      const sections = pages.map((str, index) => ({
+        properties: {},
+        children: [
+          new Paragraph({
+            children: [new TextRun(str)],
+          }),
+        ],
+      }));
+
+      const doc = new Document({ sections });
+
+      Packer.toBlob(doc).then((blob) => {
+        saveAs(blob, "story.docx");
+      });
+};
 
     return (
       <div>
-        <Button sx={{ ...sx }} onClick={createAndDownloadPDF} label='download' />
+        <Button sx={{ ...sx }} onClick={createAndDownloadDocument} label='download' />
       </div>
     );
   };
