@@ -30,10 +30,10 @@ const StartScreen = () => {
     // returns the instructions and welcome message
     return (
       <Container sx={{ paddingTop: '30vh' }} display="flex" flexDirection="column">
-        <Typography variant="h1" fontSize={'10vh'}>
+        <Typography tabIndex={0} variant="h1" fontSize={'10vh'}>
           Share your Story Ideas
         </Typography>
-        <Typography>
+        <Typography tabIndex={0}>
           Make sure to highlight the cultural and disability aspects you want to preserve!
         </Typography>
       </Container>
