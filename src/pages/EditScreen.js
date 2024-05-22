@@ -131,10 +131,10 @@ const EditScreen = (numPages) => {
     // response is a string and is text that was outputted from the ai in response to prompts
     return (
       <Box sx={{ ...sx, textAlign: 'left', width: '100%' }}>
-        <Typography variant="h2" sx={{ paddingBottom: '10px', paddingTop: '20px' }}>
+        <Typography tabIndex={0} variant="h2" sx={{ paddingBottom: '10px', paddingTop: '20px' }}>
           {label}
         </Typography>
-        <Typography variant="body1" sx={{ width: '100%', backgroundColor: theme.palette.secondary.main, padding: '10px', marginBottom: '10px', borderRadius: '10px' }}>
+        <Typography tabIndex={0} variant="body1" sx={{ width: '100%', backgroundColor: theme.palette.secondary.main, padding: '10px', marginBottom: '10px', borderRadius: '10px' }}>
           {response}
         </Typography>
       </Box>
@@ -143,7 +143,7 @@ const EditScreen = (numPages) => {
 
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vw', paddingRight: '10vw', paddingBottom: '40px', paddingTop: '30px', width: '100%' }}>
-      <Typography variant='h1'>
+      <Typography tabIndex={0} variant='h1'>
         AI-Generated Story
       </Typography>
       <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
