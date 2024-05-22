@@ -121,7 +121,7 @@ const EditScreen = (numPages) => {
     }
 
     return (
-      <Button onClick={navigateToHomeScreen} label='start new story' />
+      <Button sx={{ ...sx }} onClick={navigateToHomeScreen} label='start new story' />
     )
   }
 
@@ -152,8 +152,10 @@ const EditScreen = (numPages) => {
       <Pages sx={{ width: '100%', paddingTop: '20px' }} />
       <Box height='10vh' />
       <ApplyEditsButton />
-      <DownloadButton sx={{ marginTop: '20px' }} />
-      <StartNewStoryButton sx={{ marginTop: '20px' }} />
+      <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '20px' }}>
+        <DownloadButton sx={{ background: theme.palette.button3.main }}/>
+        <StartNewStoryButton sx={{ marginLeft: '20px' }} />
+      </Box>
     </Container>
   );
 };

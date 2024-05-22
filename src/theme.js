@@ -26,6 +26,9 @@ const theme = createTheme({
     button2: {
       main: '#FFFFFF',
     },
+    button3: {
+      main: '#999999',
+    },
   },
 });
 
