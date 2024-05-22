@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -20,6 +20,9 @@ const pages = ["This is page1 text", "This is page2 text"];
 // parameters:
 //      - numPages: int that is the number of pages in the story book
 const EditScreen = (numPages) => {
+  useEffect(() => {
+    document.title = "Intersectional Storyteller Edit";
+  }, []);
 
   const navigate = useNavigate()
   const theme = useTheme();

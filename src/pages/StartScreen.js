@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -12,6 +12,9 @@ const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details t
 
 // Returns the first screen users see when using the app where the welcome message and initial prompts are
 const StartScreen = () => {
+  useEffect(() => {
+    document.title = "Intersectional Storyteller Start";
+  }, []);
 
   const navigate = useNavigate()
   const [responses, setResponses] = React.useState(Array(prompts.length).fill(''));  // user responses to prompts
