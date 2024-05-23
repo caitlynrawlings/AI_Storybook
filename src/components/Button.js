@@ -7,6 +7,8 @@ const Button = ({ sx, onClick, label }) => {
     return (
         <MuiButton sx={{
                 background: theme.palette.button1.main,
+                marginBottom: '15px',
+                marginTop: '10px',
                 ...sx
             }}
             variant="contained"

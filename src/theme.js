@@ -3,9 +3,12 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   typography: {
     h1: {
-      fontSize: '40px', fontWeight: 'bold',
+      fontSize: '60px', fontWeight: 'bold',
     },
     h2: {
+      fontSize: '32px', fontWeight: 'bold', textAlign: 'left'
+    },
+    label: {
       fontSize: '20px', fontWeight: 'bold', textAlign: 'left'
     },
     button: {

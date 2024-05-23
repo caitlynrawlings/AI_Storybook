@@ -8,12 +8,6 @@ const PromptResponse = ({ sx, prompt, value, onChange }) => {
     setValue(event.target.value);
   };
 
-  const handleInputKeyPress = (event) => {
-    if (event.key === 'Enter') {
-        onChange(textValue)
-    }
-  };
-
   return (
     <TextField
       sx={{ ...sx, backgroundColor: 'white' }}
@@ -22,7 +16,6 @@ const PromptResponse = ({ sx, prompt, value, onChange }) => {
       variant="outlined"
       value={textValue}
       onChange={handleInputChange}
-      onKeyDown={handleInputKeyPress}
       placeholder={prompt}
       InputLabelProps={{
         shrink: false,
