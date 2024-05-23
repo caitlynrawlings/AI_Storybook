@@ -49,9 +49,9 @@ const StartScreen = () => {
       <Container display="flex" flexDirection="column">
         {prompts.map((prompt, index) => (
           <div key={prompt}>
-            <Typography variant='h2' paddingBottom='10px' paddingTop='30px'>{prompt}</Typography>
+            <Typography tabIndex={0} variant='h2' paddingBottom='10px' paddingTop='30px'>{prompt}</Typography>
             <PromptResponse
-              sx={{
+              sx={{ 
                 width: '100%',
                }}
               prompt={prompt}

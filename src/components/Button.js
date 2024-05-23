@@ -10,6 +10,7 @@ const Button = ({ sx, onClick, label }) => {
                 ...sx
             }}
             variant="contained"
+            role="button" 
             onClick={onClick}
         >
             {label.toUpperCase()}

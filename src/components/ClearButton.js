@@ -12,6 +12,7 @@ const ClearButton = ({ onClick, label }) => {
             }}
             variant="contained"
             startIcon={<ClearIcon />}
+            role="button" 
             onClick={onClick}
         >
             {label.toUpperCase()}
