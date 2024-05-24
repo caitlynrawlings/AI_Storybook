@@ -69,12 +69,12 @@ const EditScreen = (numPages) => {
         {isEditing ? (
           <Box>
             <PromptResponse
-                sx={{ width: '100%', marginBottom: '100px' }}
+                sx={{ width: '100%', marginBottom: '10px', marginTop: '10px' }}
                 prompt={prompt}
                 value={edits[index]}
                 onChange={(textValue) => handleEditsChange(index, textValue)}
             />
-            <ClearButton onClick={handleSaveClick} label="clear" />
+            <ClearButton sx={{ marginBottom: '20px' }} onClick={handleSaveClick} label="clear" />
           </Box>
         ) : (
           <Button onClick={handleEditClick} label="edit" />
@@ -151,7 +151,7 @@ const EditScreen = (numPages) => {
       <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
       <EditButton promptSection='summary' sx={{ width: '100%'}}/>
       <AiResponse sx={{ width: '100%' }} label='Explanation' response={explanation} />
-      <Pages sx={{ width: '100%', paddingTop: '20px', paddingBottom: '30px' }} />
+      <Pages sx={{ width: '100%', marginTop: '40px', paddingBottom: '30px' }} />
       <ApplyEditsButton />
       <Box sx={{ display: 'flex', flexDirection: 'row', }}>
         <DownloadButton sx={{ background: theme.palette.button3.main }}/>
