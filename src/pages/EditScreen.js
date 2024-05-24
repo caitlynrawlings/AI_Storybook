@@ -135,7 +135,7 @@ const EditScreen = (numPages) => {
     // response is a string and is text that was outputted from the ai in response to prompts
     return (
       <Box sx={{ ...sx, textAlign: 'left', width: '100%' }}>
-        <Typography tabIndex={0} variant="label" sx={{ marginBottom: '15px', paddingTop: '20px' }}>
+        <Typography tabIndex={0} variant="body2" sx={{ marginBottom: '10px', mariginTop: '20px' }}>
           {label}
         </Typography>
         <Typography tabIndex={0} variant="body1" sx={{ width: '100%', backgroundColor: theme.palette.secondary.main, padding: '10px', marginTop: '15px', borderRadius: '10px' }}>

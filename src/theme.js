@@ -8,8 +8,8 @@ const theme = createTheme({
     h2: {
       fontSize: '32px', fontWeight: 'bold', textAlign: 'left'
     },
-    label: {
-      fontSize: '20px', fontWeight: 'bold', textAlign: 'left'
+    body2: {
+      fontSize: '16px', fontWeight: '550', textAlign: 'left'
     },
     button: {
       fontWeight: 'bold',

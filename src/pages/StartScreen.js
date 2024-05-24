@@ -7,9 +7,7 @@ import ClearButton from '../components/ClearButton';
 import PromptResponse from '../components/PromptResponse';
 import { useNavigate } from "react-router-dom";
 
-// prompts about story for user to fill in
-const prompts = ["Story Topic", "Number of Pages for Story", "Cultural Details to Include", "Disability Details to Include", "Additional Details"];
-// const generalPrompts = ["Target Age of Audience", "Word count (optional)"];
+
 const sectionsPrompts = new Map(Object.entries({
   "Story Settings": ["Target Age of Audience", "Word count (optional)"],
   "Building the Main Character": ["Age of the character", "Gender", "Race/ethnicity", "Disability"],
@@ -21,15 +19,6 @@ const sectionsPrompts = new Map(Object.entries({
 
 // Returns the first screen users see when using the app where the welcome message and initial prompts are
 const StartScreen = () => {
-  // const initializeState = (prompts) => {
-  //   const state = {};
-  //   {Object.values(prompts).map((value, index) => (
-  //     Object.values(value).map((value, index) => (
-  //       state[value] = ""
-  //     ))
-  //   ))}
-  //   return state;
-  // };
 
   const initializeState = (prompts) => {
     const state = {};
@@ -58,27 +47,6 @@ const StartScreen = () => {
     setResponses(initializeState(sectionsPrompts));
   };
 
-  const StoryPrompts = () => {
-    // returns all the prompts and response boxes
-    return (
-      <Container sx={{display: "flex", flexDirection: "column"}}>
-        {prompts.map((prompt, index) => (
-          <div key={prompt}>
-            <Typography tabIndex={0} variant='h2' paddingBottom='10px' paddingTop='30px'>{prompt}</Typography>
-            <PromptResponse
-              sx={{ 
-                width: '100%',
-               }}
-              prompt={prompt}
-              value={responses[index]}
-              onChange={(textValue) => handleResponseChange(index, textValue)}
-            />
-          </div>
-        ))}
-      </Container>
-    );
-  };
-
   const Sections = () => {
     // returns all the sections of user prompts
     return (
@@ -96,17 +64,17 @@ const StartScreen = () => {
       <Container sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography tabIndex={0} variant='h2' sx={{marginBottom: '10px', marginTop: '30px'}}>{header}</Typography>
         {prompts.map((prompt, index) => (
-          <div key={prompt}>
-            <Typography tabIndex={0} variant='label' sx={{ marginBottom:'10px', marginTop: '30px' }}>{prompt}</Typography>
+          <Container key={prompt} sx={{ marginBottom: '10px', marginTop: '10px' }}>
+            <Typography tabIndex={0} variant='body2' sx={{ marginBottom: '10px' }}>{prompt}</Typography>
             <PromptResponse
               sx={{ 
                 width: '100%',
-               }}
+              }}
               prompt={prompt}
               value={responses[prompt]}
               onChange={(textValue) => handleResponseChange(prompt, textValue)}
             />
-          </div>
+          </Container>
         ))}
       </Container>
     );
@@ -124,11 +92,11 @@ const StartScreen = () => {
   }
 
   return (
-    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vh', paddingRight: '10vh', paddingBottom: '40px', paddingTop: '30px', width: '100%' }}>
+    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vh', paddingRight: '10vh', paddingBottom: '50px', paddingTop: '30px', width: '100%' }}>
       <Instructions instructions={"Share your Story Ideas: Make sure to highlight the cultural and disability aspects you want to preserve!"} />
       <ClearButton onClick={clearAllInputs} label={"clear all input"}/>
       <Sections />
-      <GenerateStoryButton />
+      <GenerateStoryButton sx={{ marginTop: '30px' }}/>
     </Container>
   );
 };
