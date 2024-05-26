@@ -9,7 +9,8 @@ import PromptResponse from '../components/PromptResponse';
 import Instructions from '../components/Instructions';
 import { saveAs } from 'file-saver';
 import { Packer, Document, TextRun, Paragraph } from 'docx';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 // TODO: retrieve these values from the ai response
 const summary = "This is the summary";
@@ -25,6 +26,7 @@ const EditScreen = (numPages) => {
     document.title = "Intersectional Storyteller Edit";
   }, []);
 
+  const { state } = useLocation();
   const navigate = useNavigate()
   const theme = useTheme();
   const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after seeing story

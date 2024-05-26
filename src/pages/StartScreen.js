@@ -7,7 +7,6 @@ import ClearButton from '../components/ClearButton';
 import PromptResponse from '../components/PromptResponse';
 import { useNavigate } from "react-router-dom";
 
-
 const storyGenerationEndpoint = "http://127.0.0.1:5000/generate-story";
 const sectionsPrompts = new Map(Object.entries({
   "Story Settings": ["Target Age of Audience", "Word count (optional)"],
@@ -35,7 +34,6 @@ const StartScreen = () => {
   useEffect(() => {
     document.title = "Intersectional Storyteller Start";
   }, []);
-
 
   const handleResponseChange = (prompt, value) => {
     setResponses(prevResponses => ({
@@ -84,8 +82,7 @@ const StartScreen = () => {
   const GenerateStoryButton = ({ sx }) => {
     // handles logic for sending user input to gpt and going to edit screen
     const navigateToEditScreen = () => {
-      // format and send user input to GPT
-      const requestData = {"age": "2"}
+      const requestData = {"sampleData": "1"}
 
       // wait until response is generated from GPT
       fetch(storyGenerationEndpoint, {
@@ -95,13 +92,11 @@ const StartScreen = () => {
         },
         body: JSON.stringify(requestData)
       })
-        .then(response => response.text()) // Get the response as text
+        .then(response => response.json())
         .then(data => {
-          console.log(data);
+          // send the data to the EditScreen component
+          navigate('/edit', {state: {'story': data['story']}});
         }).catch(error => { console.error('Error:', error); });
-
-      // navigate to next page
-      navigate("/edit");
    }
 
     return (
