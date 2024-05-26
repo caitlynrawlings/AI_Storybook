@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import request, Flask
 from flask_cors import CORS
 import openai
 
@@ -16,9 +16,10 @@ deployment_name='M4GPT4'
 disability_list=["autism", "cerebral palsy", "deaf"]
 
 # Generates stories given constraints and returns it as a string
-@app.route('/execute-script', methods=['POST'])
+@app.route('/generate-story', methods=['POST'])
 def execute_script():
-    return {"story": "RESULT FROM GPT PAGE 1"}
+    data = request.json
+    return {"story": "RESULT FROM GPT PAGE 1", "userInput": data}
 	# for i in range(3):
 	# 	completion = openai.ChatCompletion.create(
 	# 		engine=deployment_name,

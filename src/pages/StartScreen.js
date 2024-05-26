@@ -8,6 +8,7 @@ import PromptResponse from '../components/PromptResponse';
 import { useNavigate } from "react-router-dom";
 
 
+const storyGenerationEndpoint = "http://127.0.0.1:5000/generate-story";
 const sectionsPrompts = new Map(Object.entries({
   "Story Settings": ["Target Age of Audience", "Word count (optional)"],
   "Building the Main Character": ["Age of the character", "Gender", "Race/ethnicity", "Disability"],
@@ -84,14 +85,15 @@ const StartScreen = () => {
     // handles logic for sending user input to gpt and going to edit screen
     const navigateToEditScreen = () => {
       // format and send user input to GPT
+      const requestData = {"age": "2"}
 
       // wait until response is generated from GPT
-      const scriptEndpoint = "http://127.0.0.1:5000/execute-script";
-      fetch(scriptEndpoint, {
+      fetch(storyGenerationEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' // Specify the content type as JSON
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify(requestData)
       })
         .then(response => response.text()) // Get the response as text
         .then(data => {
