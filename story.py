@@ -18,8 +18,11 @@ disability_list=["autism", "cerebral palsy", "deaf"]
 # Generates stories given constraints and returns it as a string
 @app.route('/generate-story', methods=['POST'])
 def execute_script():
+    # maps each user input field to its value
+    # ex. {"Age of the character": 12, ...}
     data = request.json
-    return {"story": "RESULT FROM GPT PAGE 1", "userInput": data}
+
+    return {"story": "sample"}
 	# for i in range(3):
 	# 	completion = openai.ChatCompletion.create(
 	# 		engine=deployment_name,
