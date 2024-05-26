@@ -67,7 +67,7 @@ const StartScreen = () => {
           <Container key={prompt} sx={{ marginBottom: '10px', marginTop: '10px' }}>
             <Typography tabIndex={0} variant='body2' sx={{ marginBottom: '10px' }}>{prompt}</Typography>
             <PromptResponse
-              sx={{ 
+              sx={{
                 width: '100%',
               }}
               prompt={prompt}
@@ -83,8 +83,24 @@ const StartScreen = () => {
   const GenerateStoryButton = ({ sx }) => {
     // handles logic for sending user input to gpt and going to edit screen
     const navigateToEditScreen = () => {
+      // format and send user input to GPT
+
+      // wait until response is generated from GPT
+      const scriptEndpoint = "http://127.0.0.1:5000/execute-script";
+      fetch(scriptEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json' // Specify the content type as JSON
+        },
+      })
+        .then(response => response.text()) // Get the response as text
+        .then(data => {
+          console.log(data);
+        }).catch(error => { console.error('Error:', error); });
+
+      // navigate to next page
       navigate("/edit");
-    }
+   }
 
     return (
         <Button sx={{...sx}} onClick={navigateToEditScreen} label='generate story'/>
