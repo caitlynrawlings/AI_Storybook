@@ -16,7 +16,6 @@ const sectionsPrompts = new Map(Object.entries({
   "Representation": ["Cultural Representation", "Disability Representation"]
 }));
 
-
 // Returns the first screen users see when using the app where the welcome message and initial prompts are
 const StartScreen = () => {
 
