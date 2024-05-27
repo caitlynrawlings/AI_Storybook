@@ -17,12 +17,12 @@ disability_list=["autism", "cerebral palsy", "deaf"]
 
 # Generates stories given constraints and returns it as a string
 @app.route('/generate-story', methods=['POST'])
-def execute_script():
+def generate_story():
     # maps each user input field to its value
     # ex. {"Age of the character": 12, ...}
     data = request.json
 
-    return {"story": "sample"}
+    return {"story": "This is page1 text.\nThis is page2 text."}
 	# for i in range(3):
 	# 	completion = openai.ChatCompletion.create(
 	# 		engine=deployment_name,
@@ -31,6 +31,13 @@ def execute_script():
 	# 		{"role": "user", "content": "Write a story about a child with " + disability_list[i]}
 	# 		])
 	# 	return completion.choices[0].message.content
+
+@app.route('/edit-story', methods=['POST'])
+def edit_story():
+    data = request.json
+
+	# TODO: modify the existing story based on the edits suggested per page
+    return {"newStory": "This is the NEW page1 text.\nThis is the NEW page2 text."}
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -11,11 +11,11 @@ import { saveAs } from 'file-saver';
 import { Packer, Document, TextRun, Paragraph } from 'docx';
 import { useNavigate, useLocation } from "react-router-dom";
 
+const storyEditEndpoint = "http://127.0.0.1:5000/edit-story";
 
 // TODO: retrieve these values from the ai response
 const summary = "This is the summary";
 const explanation = "AI explanations on cultural and disability representation";
-const pages = ["This is page1 text", "This is page2 text"];
 
 // Returns the screen that has the AI output and places for user feedback and story iteration
 //
@@ -26,15 +26,16 @@ const EditScreen = (numPages) => {
     document.title = "Intersectional Storyteller Edit";
   }, []);
 
-  const { state } = useLocation();
   const navigate = useNavigate()
   const theme = useTheme();
-  const [edits, setEdits] = React.useState(Array(numPages).fill(''));  // Edits user wants to make after seeing story
+
+  // Parse GPT response passed from homepage to populate fields
+  const { state } = useLocation();
+  const[pages, setPages] = useState(state?.story.split('\n'));
+  const pageEdits = {} // users edits to pages
 
   const handleEditsChange = (index, value) => {
-    const newEdits = [...edits];
-    newEdits[index] = value;
-    setEdits(newEdits);
+    pageEdits[index] = value;
   };
 
   // TODO: implement clear edit function
@@ -46,14 +47,14 @@ const EditScreen = (numPages) => {
         {pages.map((page, index) => (
           <Box sx={{ width: '100%' }} key={index}>
             <AiResponse sx={{ width: '100%' }} label={`Page ${index + 1}`} response={page} />
-            <EditButton promptSection={`page ${index + 1}`}/>
+            <EditButton index={index} promptSection={`page ${index + 1}`}/>
           </Box>
         ))}
       </Box>
     );
   };
 
-  const EditButton = ({ index, handleEditsChange, sx, promptSection }) => {
+  const EditButton = ({ index, sx, promptSection }) => {
     const [isEditing, setIsEditing] = useState(false);
     const prompt = `Enter modification prompts for ${promptSection}.`;
 
@@ -73,7 +74,6 @@ const EditScreen = (numPages) => {
             <PromptResponse
                 sx={{ width: '100%', marginBottom: '10px', marginTop: '10px' }}
                 prompt={prompt}
-                value={edits[index]}
                 onChange={(textValue) => handleEditsChange(index, textValue)}
             />
             <ClearButton sx={{ marginBottom: '20px' }} onClick={handleSaveClick} label="clear" />
@@ -87,9 +87,24 @@ const EditScreen = (numPages) => {
 
   const ApplyEditsButton = ({ sx }) => {
     // handles logic for sending edits to gpt and refreshes page based on results
-    // TODO:
+    const applyAllEdits = () => {
+      // wait until response is generated from GPT
+      fetch(storyEditEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pageEdits)
+      })
+        .then(response => response.json())
+        .then(data => {
+          // refresh the edit component to use the new pages
+          setPages(data["newStory"].split('\n'))
+        }).catch(error => { console.error('Error:', error); });
+   }
+
     return (
-      <Button sx={{ ...sx }} label='apply edits to story' />
+      <Button sx={{ ...sx }} onClick={applyAllEdits} label='apply edits to story' />
     );
   };
 
