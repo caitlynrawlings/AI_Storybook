@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Instructions from '../components/Instructions';
@@ -27,22 +27,21 @@ const StartScreen = () => {
     return state;
   };
 
-  const navigate = useNavigate()
-  const [responses, setResponses] = React.useState(initializeState(sectionsPrompts));  // user responses to prompts. maps (prompt : user response)
+  const navigate = useNavigate() // handles navigation between pages
+  const [userInputs, setUserInputs] = React.useState({}); // used to force re-render of page when clearing inputs
+  const requestData = initializeState(sectionsPrompts) // user responses to prompts. maps (prompt : user response)
 
   useEffect(() => {
     document.title = "Intersectional Storyteller Start";
   }, []);
 
   const handleResponseChange = (prompt, value) => {
-    setResponses(prevResponses => ({
-      ...prevResponses,
-      [prompt]: value
-    }));
+    requestData[prompt] = value;
   };
 
   const clearAllInputs = () => {
-    setResponses(initializeState(sectionsPrompts));
+    requestData = {}
+    setUserInputs({});
   };
 
   const Sections = () => {
@@ -69,7 +68,6 @@ const StartScreen = () => {
                 width: '100%',
               }}
               prompt={prompt}
-              value={responses[prompt]}
               onChange={(textValue) => handleResponseChange(prompt, textValue)}
             />
           </Container>
@@ -81,8 +79,6 @@ const StartScreen = () => {
   const GenerateStoryButton = ({ sx }) => {
     // handles logic for sending user input to gpt and going to edit screen
     const navigateToEditScreen = () => {
-      const requestData = {"sampleData": "1"}
-
       // wait until response is generated from GPT
       fetch(storyGenerationEndpoint, {
         method: 'POST',

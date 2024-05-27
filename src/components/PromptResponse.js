@@ -1,11 +1,12 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-const PromptResponse = ({ sx, prompt, value, onChange }) => {
-  const [textValue, setValue] = React.useState(value);
+const PromptResponse = ({ sx, prompt, onChange }) => {
+  const [textValue, setValue] = React.useState("");
 
   const handleInputChange = (event) => {
     setValue(event.target.value);
+    onChange(event.target.value);
   };
 
   return (
