@@ -1,4 +1,4 @@
-from flask import request, Flask
+from flask import request, Flask, jsonify
 from flask_cors import CORS
 import openai
 
@@ -59,6 +59,55 @@ additional_prompts = [
     }
 ]
 
+def generate_user_prompt(data):
+    age = data.get("Target Age of Audience", "young")
+    word_count = data.get("Word count (optional)", "")
+    char_age = data.get("Age of the character", "young")
+    char_gender = data.get("Gender", "")
+    char_race = data.get("Race/ethnicity", "")
+    char_disability = data.get("Disability", "")
+    culture = data.get("Cultural Representation", "")
+    disability = data.get("Disability Representation", "")
+    description = data.get("Enter Story Description", "")
+    set_up = data.get("Set-up (optional)", "")
+    inciting_incident = data.get("Inciting incident (optional)", "")
+    increasing_action = data.get("Increasing action (optional)", "")
+    climax = data.get("Climax (optional)", "")
+    subsiding_action = data.get("Subsiding action (optional)", "")
+    resolution = data.get("Resolution (optional)", "")
+    
+    prompt = f"Write a story for a child whose age is {age}."
+    if word_count:
+      prompt += f"The story should have a total word count of {word_count}."
+    else:
+      prompt += f"The story should have a total word count that is reasonable for a child of age {age}."
+    prompt += "Split the story into pages like in a children's storybook, with reasonable amount of words per page, and separate each page's content with a new line character '\\n'."
+    prompt += f"The main character of the story is age: {char_age}, gender: {char_gender}, race/ethnicity: {char_race}, and with disability: {char_disability}"
+    prompt += f"The overall storyline is {description}"
+    prompt += f"The story should represent the main character's culture this way: {culture} and the main character's disability this way: {disability}"
+    prompt += "The story should include the following additional elements in the plots:\n"
+    
+    if set_up:
+        prompt += f"- Set up: {set_up}\n"
+    if inciting_incident:
+        prompt += f"-Inciting incident: {inciting_incident}\n"
+    if increasing_action:
+        prompt += f"- Increasing action: {increasing_action}\n"
+    if climax:
+        prompt += f"- Climax: {climax}\n"
+    if subsiding_action:
+        prompt += f"- Subsiding action: {subsiding_action}\n"
+    if resolution:
+        prompt += f"- Resolution: {resolution}\n"
+
+    user_prompt = [
+        {
+            "role": "user",
+            "content": prompt
+				}
+		]
+    return user_prompt
+
 # Generates stories given constraints and returns it as a string
 @app.route('/generate-story', methods=['POST'])
 def generate_story():
@@ -66,21 +115,18 @@ def generate_story():
     # ex. {"Age of the character": 12, ...}
 		data = request.json
     
-		# create story based on user requested details
+		# create story based on user requested details and also format the response
 		user_prompt = generate_user_prompt(data)
     
-		# format the AI response into pages/paragraphs
-		format_prompt = []
-    
-		messages = high_level_prompts + specific_prompts + additional_prompts + user_prompt + format_prompt
+		messages = high_level_prompts + specific_prompts + additional_prompts + user_prompt
     
 		completion = openai.ChatCompletion.create(
 			engine=deployment_name,
 			messages=messages
     )
     
-    # return completion.choices[0].message.content
-		return {"story": "This is page1 text.\nThis is page2 text."}
+		return jsonify({"story": completion.choices[0].message.content})
+		# return {"story": "This is page1 text.\nThis is page2 text."}
 		# for i in range(3):
 		# 	completion = openai.ChatCompletion.create(
 		# 		engine=deployment_name,
@@ -89,17 +135,6 @@ def generate_story():
 		# 		{"role": "user", "content": "Write a story about a child with " + disability_list[i]}
 		# 		])
 		# 	return completion.choices[0].message.content
-    
-def generate_user_prompt(data):
-    user_prompt = [
-        {
-            "role": "user",
-            "content": (
-                "Write a story for a child whose age is"# + data[Age of the character]
-						)
-				}
-		]
-    return user_prompt
 
 @app.route('/edit-story', methods=['POST'])
 def edit_story():
