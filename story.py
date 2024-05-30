@@ -96,20 +96,23 @@ def generate_user_prompt(data):
 def generate_story():
     # maps each user input field to its value
     # ex. {"Age of the character": 12, ...}
-		data = request.json
+    data = request.json
 
-		# create story based on user requested details and also format the response
-		user_prompt = generate_user_prompt(data)
+    # create story based on user requested details and also format the response
+    user_prompt = generate_user_prompt(data)
 
-		messages = system_prompt + user_prompt
+    messages = system_prompt + user_prompt
 
-		completion = openai.ChatCompletion.create(
-			engine=deployment_name,
-			messages=messages
-                 )
+    completion = openai.ChatCompletion.create(
+        engine=deployment_name,
+        messages=messages
+    )
+    
+    generated_story = completion.choices[0].message.content
+    rewrite_story = self_edit_story(generated_story)
 
-		# return completion.choices[0].message.content # this is test
-		return jsonify({"story": completion.choices[0].message.content})
+    # return completion.choices[0].message.content # this is test
+    return jsonify({"story": rewrite_story})
         # return {"story": "This is page1 text.\nThis is page2 text."}
 		# for i in range(3):
 		# 	completion = openai.ChatCompletion.create(
@@ -120,10 +123,40 @@ def generate_story():
 		# 		])
 		# 	return completion.choices[0].message.content
 
+def self_edit_story(story):
+    self_edit_prompt = [
+        {
+            "role": "user",
+            "content": f"Taking the perspective of a children's story book editor who is good at writing unbiased stories. Read through the story below to give suggestions on improving it to avoid any negative stereotypes of disability (suffering, dependent, does not like ) and to avoid any negative stereotypes of different cultures (avoids negative stereotypes of Black culture: criminality, poverty, struggle, or lower intelligence and capability, avoid depicting Chinese cultures as tokens of bamboo, dragons, dumplings, pandas, jade..). Here is the story: \n" + story
+		}
+	]
+
+    edits = openai.ChatCompletion.create(
+        engine=deployment_name,
+        messages=self_edit_prompt
+    )
+    
+    rewrite_prompt = [
+        {
+            "role": "user",
+            "content": f"Read the suggestions below and rewrite your story to avoid stereotypes. Keep the story in the same format of pages. Here are the suggestions \n" + edits.choices[0].message.content
+        }
+    ]
+
+    rewrite = openai.ChatCompletion.create(
+        engine=deployment_name,
+        messages=rewrite_prompt
+    )
+
+    return rewrite.choices[0].message.content
+    
+
+
 @app.route('/edit-story', methods=['POST'])
 def edit_story():
     data = request.json
 
+    prompt = f"Edit this paragraph based on xxx {age}."
 	# TODO: modify the existing story based on the edits suggested per page
     return {"newStory": "This is the NEW page1 text.\nThis is the NEW page2 text."}
 
