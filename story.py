@@ -56,18 +56,20 @@ def generate_user_prompt(data):
     climax = data.get("Climax (optional)", "")
     subsiding_action = data.get("Subsiding action (optional)", "")
     resolution = data.get("Resolution (optional)", "")
-    
+
     prompt = f"Write a story for a child whose age is {age}."
     if word_count:
       prompt += f"The story should have a total word count of {word_count}."
     else:
       prompt += f"The story should have a total word count that is reasonable for a child of age {age}."
-    prompt += "Split the story into pages like in a children's storybook, with reasonable amount of words per page, and separate each page's content with a new line character '\\n'."
+    prompt += "Split the story into pages like in a children's storybook, with reasonable amount of words per page."
+    prompt += "Format the story pages in the structure of a json string, where each key is the page number, and the value is the string content of that page."
+
     prompt += f"The main character of the story is age: {char_age}, gender: {char_gender}, race/ethnicity: {char_race}, and with disability: {char_disability}"
     prompt += f"The overall storyline is {description}"
     prompt += f"The story should represent the main character's culture this way: {culture} and the main character's disability this way: {disability}"
     prompt += "The story should include the following additional elements in the plots:\n"
-    
+
     if set_up:
         prompt += f"- Set up: {set_up}\n"
     if inciting_incident:
@@ -95,17 +97,17 @@ def generate_story():
     # maps each user input field to its value
     # ex. {"Age of the character": 12, ...}
 		data = request.json
-    
+
 		# create story based on user requested details and also format the response
 		user_prompt = generate_user_prompt(data)
-    
+
 		messages = system_prompt + user_prompt
-    
+
 		completion = openai.ChatCompletion.create(
 			engine=deployment_name,
 			messages=messages
                  )
-        
+
 		# return completion.choices[0].message.content # this is test
 		return jsonify({"story": completion.choices[0].message.content})
         # return {"story": "This is page1 text.\nThis is page2 text."}

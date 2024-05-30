@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import ClearButton from '../components/ClearButton';
 import PromptResponse from '../components/PromptResponse';
 import { useNavigate } from "react-router-dom";
+import ClipLoader from 'react-spinners/ClipLoader'
 
 const storyGenerationEndpoint = "http://127.0.0.1:5000/generate-story";
 const sectionsPrompts = new Map(Object.entries({
@@ -30,6 +31,7 @@ const StartScreen = () => {
   const navigate = useNavigate() // handles navigation between pages
   const [userInputs, setUserInputs] = React.useState({}); // used to force re-render of page when clearing inputs
   const requestData = initializeState(sectionsPrompts) // user responses to prompts. maps (prompt : user response)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Intersectional Storyteller Start";
@@ -79,6 +81,8 @@ const StartScreen = () => {
   const GenerateStoryButton = ({ sx }) => {
     // handles logic for sending user input to gpt and going to edit screen
     const navigateToEditScreen = () => {
+      setLoading(true);
+
       // wait until response is generated from GPT
       fetch(storyGenerationEndpoint, {
         method: 'POST',
@@ -89,6 +93,7 @@ const StartScreen = () => {
       })
         .then(response => response.json())
         .then(data => {
+          setLoading(false);
           // send the data to the EditScreen component
           navigate('/edit', {state: {'story': data['story']}});
         }).catch(error => { console.error('Error:', error); });
@@ -105,6 +110,14 @@ const StartScreen = () => {
       <ClearButton onClick={clearAllInputs} label={"clear all input"}/>
       <Sections />
       <GenerateStoryButton sx={{ marginTop: '30px' }}/>
+      {loading && (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <ClipLoader size={15} color="#7646aa" loading={loading} />
+          <Typography style={{ margin: '0 0 0 10px' }} tabIndex={0}>
+            Your story is being crafted. This may take a moment.
+          </Typography>
+        </div>
+      )}
     </Container>
   );
 };

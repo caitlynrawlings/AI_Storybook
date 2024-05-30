@@ -26,12 +26,28 @@ const EditScreen = (numPages) => {
     document.title = "Intersectional Storyteller Edit";
   }, []);
 
+  const initializePages = (gptStoryOutput) => {
+      // Regular expression to match the JSON string within the "story" property
+      const regex = /```json\n([^`]+)```/;
+
+      // Extract the JSON string
+      const match = gptStoryOutput.match(regex);
+      const jsonString = match ? match[1].trim() : '';
+
+      // Parse the JSON string into a JSON object
+      const jsonObject = JSON.parse(jsonString);
+
+      // Extract values from the object and place them in an array
+      const valuesArray = Object.values(jsonObject);
+      return valuesArray
+  }
+
   const navigate = useNavigate()
   const theme = useTheme();
 
   // Parse GPT response passed from homepage to populate fields
   const { state } = useLocation();
-  const[pages, setPages] = useState(state?.story.split('\n'));
+  const[pages, setPages] = useState(initializePages(state?.story));
   const pageEdits = {} // users edits to pages
 
   const handleEditsChange = (index, value) => {
