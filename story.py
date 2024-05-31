@@ -1,6 +1,8 @@
 from flask import request, Flask, jsonify
 from flask_cors import CORS
 import openai
+from openai.error import RateLimitError
+import time
 
 # Setup flask
 app = Flask(__name__)
@@ -39,6 +41,11 @@ system_prompt = [{"role": "system", "content": system_prompts_text}]
 #             "- Resolution: Returns home with new wisdom\n"
 #     )}]
 
+test_user_prompt = [
+    {"role" : "user",
+     "content" : "Write a story for a child whose age is 8. The story should have a total word count of 300. The main character of the story is age: 8, gender: girl, African American. The story is about her becoming a superhero. Split the story into pages like in a children's storybook, with reasonable amount of words per page. Format the story pages in the structure of a json string, where each key is the page number, and the value is the string content of that page."}
+]
+
 
 def generate_user_prompt(data):
     age = data.get("Target Age of Audience", "young")
@@ -57,7 +64,7 @@ def generate_user_prompt(data):
     subsiding_action = data.get("Subsiding action (optional)", "")
     resolution = data.get("Resolution (optional)", "")
 
-    prompt = f"Write a story for a child whose age is {age}."
+    prompt = f"Write a story for a child whose age is {age}. Make sure the vocabulary and sentence structures included in the story is reasonable for child at this age."
     if word_count:
       prompt += f"The story should have a total word count of {word_count}."
     else:
@@ -109,10 +116,13 @@ def generate_story():
     )
     
     generated_story = completion.choices[0].message.content
-    rewrite_story = self_edit_story(generated_story)
+    print("This is the first story: " + generated_story)
+    rewrite_story = self_edit_story(generated_story, user_prompt)
+
+    return rewrite_story
 
     # return completion.choices[0].message.content # this is test
-    return jsonify({"story": rewrite_story})
+    # return jsonify({"story": rewrite_story})
         # return {"story": "This is page1 text.\nThis is page2 text."}
 		# for i in range(3):
 		# 	completion = openai.ChatCompletion.create(
@@ -123,32 +133,32 @@ def generate_story():
 		# 		])
 		# 	return completion.choices[0].message.content
 
-def self_edit_story(story):
+def self_edit_story(story, user_prompt):
     self_edit_prompt = [
         {
             "role": "user",
-            "content": f"Taking the perspective of a children's story book editor who is good at writing unbiased stories. Read through the story below to give suggestions on improving it to avoid any negative stereotypes of disability (suffering, dependent, does not like ) and to avoid any negative stereotypes of different cultures (avoids negative stereotypes of Black culture: criminality, poverty, struggle, or lower intelligence and capability, avoid depicting Chinese cultures as tokens of bamboo, dragons, dumplings, pandas, jade..). Here is the story: \n" + story
+            "content": f"Taking the perspective of a children's story book editor who is good at writing unbiased stories. Read through the story below and rewrite sections to avoid any negative stereotypes of disability (suffering, dependent, does not like ) and to avoid any negative stereotypes of different cultures (avoids negative stereotypes of Black culture: criminality, poverty, struggle, or lower intelligence and capability, avoid depicting Chinese cultures as tokens of bamboo, dragons, dumplings, pandas, jade..). Also avoid gender stereotypes and avoid stiff language. Make sure the story's format stays the same. Do not change the part of the story that does not include stereotypes descriped above. Here is the story: \n {story} \n Make sure the edited story still follow everything in the user prompt below. {user_prompt}"
 		}
 	]
-
-    edits = openai.ChatCompletion.create(
-        engine=deployment_name,
-        messages=self_edit_prompt
-    )
     
-    rewrite_prompt = [
-        {
-            "role": "user",
-            "content": f"Read the suggestions below and rewrite your story to avoid stereotypes. Keep the story in the same format of pages. Here are the suggestions \n" + edits.choices[0].message.content
-        }
-    ]
+    try:
+        edits = openai.ChatCompletion.create(
+            engine=deployment_name,
+            messages=self_edit_prompt
+        )
+    except RateLimitError as e:
+        if "exceeded token rate limit" in str(e):
+            print(str(e))
+            wait_time = 10  # seconds
+            print(f"Rate limit exceeded. Waiting for {wait_time} seconds.")
+            time.sleep(wait_time)
+            return self_edit_story(story)  # Retry the API call
+        else:
+            raise 
 
-    rewrite = openai.ChatCompletion.create(
-        engine=deployment_name,
-        messages=rewrite_prompt
-    )
+    rewrite_story = edits.choices[0].message.content
 
-    return rewrite.choices[0].message.content
+    return rewrite_story
     
 
 
@@ -175,4 +185,4 @@ def edit_story():
 if __name__ == '__main__':
     app.run(debug=True)
     # story = generate_story()
-    # print(story)
+    # print("Final Story: " + story)
