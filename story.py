@@ -156,9 +156,21 @@ def self_edit_story(story):
 def edit_story():
     data = request.json
 
-    prompt = f"Edit this paragraph based on xxx {age}."
-	# TODO: modify the existing story based on the edits suggested per page
-    return {"newStory": "This is the NEW page1 text.\nThis is the NEW page2 text."}
+    edit_suggestions = '\n'.join(data)
+    edit_prompt = [
+        {
+            "role": "user",
+            "content": f"Read the edit suggestions below and based on these edits to improve the story. Keep the story in the same format of pages. Here are the suggestions: \n {edit_suggestions}" 
+        }
+    ]
+
+    completion = openai.ChatCompletion.create(
+        engine=deployment_name,
+        messages=edit_prompt
+    )
+
+    return jsonify({"newStory": completion.choices[0].message.content})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
