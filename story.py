@@ -24,6 +24,8 @@ with open('prompt.txt', 'r') as file:
     system_prompts_text = file.read()
 system_prompt = [{"role": "system", "content": system_prompts_text}]
 
+original_story = ""
+
 # test_user_prompt = [
 #         {	"role" : "user",
 #             "content": (
@@ -121,7 +123,9 @@ def generate_story():
     print("This is the first story: " + generated_story)
     rewrite_story = self_edit_story(generated_story, user_prompt)
 
-    return rewrite_story
+    original_story = rewrite_story
+
+    return jsonify({"story": rewrite_story})
 
     # return completion.choices[0].message.content # this is test
     # return jsonify({"story": rewrite_story})
@@ -169,10 +173,15 @@ def edit_story():
     data = request.json
 
     edit_suggestions = '\n'.join(data)
+
+    if len(original_story) < 1:
+        print("The original story was not stored previously.")
+        return 
+    
     edit_prompt = [
         {
             "role": "user",
-            "content": f"Read the edit suggestions below and based on these edits to improve the story. Keep the story in the same format of pages. Here are the suggestions: \n {edit_suggestions}" 
+            "content": f"Read the edit suggestions below and based on these edits to improve the story. Each suggestion's key is matched to the page number of the story. Only edit each section of the story based on edits written for this section. Keep the story in the same format in json. Here is the original story:\n {original_story} \n Here are the suggestions: \n {edit_suggestions}" 
         }
     ]
 
