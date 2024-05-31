@@ -71,6 +71,8 @@ def generate_user_prompt(data):
       prompt += f"The story should have a total word count that is reasonable for a child of age {age}."
     prompt += "Split the story into pages like in a children's storybook, with reasonable amount of words per page."
     prompt += "Format the story pages in the structure of a json string, where each key is the page number, and the value is the string content of that page."
+    prompt += "Also generate a summary of the story and add it in the json string, where the key is summary and the value is the string of the story summary."
+    prompt += f"Also generate a short paragraph of explaining how you represent culture: {char_race} and disability: {char_disability} in the story. Add it in the json string, where the key is explanation and the value is the string of the explanation you generated."
 
     prompt += f"The main character of the story is age: {char_age}, gender: {char_gender}, race/ethnicity: {char_race}, and with disability: {char_disability}"
     prompt += f"The overall storyline is {description}"
@@ -152,7 +154,7 @@ def self_edit_story(story, user_prompt):
             wait_time = 10  # seconds
             print(f"Rate limit exceeded. Waiting for {wait_time} seconds.")
             time.sleep(wait_time)
-            return self_edit_story(story)  # Retry the API call
+            return self_edit_story(story, user_prompt)  # Retry the API call
         else:
             raise 
 
