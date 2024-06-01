@@ -24,8 +24,6 @@ with open('prompt.txt', 'r') as file:
     system_prompts_text = file.read()
 system_prompt = [{"role": "system", "content": system_prompts_text}]
 
-original_story = ""
-
 # test_user_prompt = [
 #         {	"role" : "user",
 #             "content": (
@@ -123,8 +121,6 @@ def generate_story():
     print("This is the first story: " + generated_story)
     rewrite_story = self_edit_story(generated_story, user_prompt)
 
-    original_story = rewrite_story
-
     return jsonify({"story": rewrite_story})
 
     # return completion.choices[0].message.content # this is test
@@ -172,10 +168,11 @@ def self_edit_story(story, user_prompt):
 def edit_story():
     data = request.json
 
-    edit_suggestions = '\n'.join(data)
+    edit_suggestions = data.get("edits", "")
+    original_story = data.get("original", "")
 
     if len(original_story) < 1:
-        print("The original story was not stored previously.")
+        print("The original story is empty.")
         return 
     
     edit_prompt = [
