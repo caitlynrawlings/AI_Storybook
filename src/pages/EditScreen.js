@@ -10,21 +10,15 @@ import Instructions from '../components/Instructions';
 import { saveAs } from 'file-saver';
 import { Packer, Document, TextRun, Paragraph } from 'docx';
 import { useNavigate, useLocation } from "react-router-dom";
+import ClipLoader from 'react-spinners/ClipLoader'
 
 const storyEditEndpoint = "http://127.0.0.1:5000/edit-story";
-
-// TODO: retrieve these values from the ai response
-const summary = "This is the summary";
-const explanation = "AI explanations on cultural and disability representation";
 
 // Returns the screen that has the AI output and places for user feedback and story iteration
 //
 // parameters:
 //      - numPages: int that is the number of pages in the story book
 const EditScreen = (numPages) => {
-  useEffect(() => {
-    document.title = "Intersectional Storyteller Edit";
-  }, []);
 
   const initializePages = (gptStoryOutput) => {
       // Regular expression to match the JSON string within the "story" property
@@ -37,8 +31,17 @@ const EditScreen = (numPages) => {
       // Parse the JSON string into a JSON object
       const jsonObject = JSON.parse(jsonString);
 
-      // Extract values from the object and place them in an array
-      const valuesArray = Object.values(jsonObject);
+      // Extract page values from the object and place them in an array
+      const valuesArray = [];
+      Object.keys(jsonObject).forEach(key => {
+        if (key == "summary") {
+          setSummary(jsonObject[key]);
+        } else if (key == "explanation") {
+          setExplanation(jsonObject[key]);
+        } else {
+          valuesArray.push(jsonObject[key]);
+        }
+      });
       return valuesArray
   }
 
@@ -47,8 +50,19 @@ const EditScreen = (numPages) => {
 
   // Parse GPT response passed from homepage to populate fields
   const { state } = useLocation();
-  const[pages, setPages] = useState(initializePages(state?.story));
+  const [summary, setSummary] = useState("")
+  const [explanation, setExplanation] = useState("")
+  const[pages, setPages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const pageEdits = {} // users edits to pages
+
+  useEffect(() => {
+    document.title = "Intersectional Storyteller Edit";
+    if (state?.story) {
+      const initialPages = initializePages(state.story);
+      setPages(initialPages);
+    }
+  }, [state?.story]);
 
   const handleEditsChange = (index, value) => {
     pageEdits[index] = value;
@@ -104,18 +118,29 @@ const EditScreen = (numPages) => {
   const ApplyEditsButton = ({ sx }) => {
     // handles logic for sending edits to gpt and refreshes page based on results
     const applyAllEdits = () => {
+      // format pages into a json
+      const originalPagesJson = pages.reduce((newJson, currentValue, index) => {
+        newJson[index] = currentValue;
+        return newJson;
+      }, {});
+
+      setLoading(true);
       // wait until response is generated from GPT
       fetch(storyEditEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(pageEdits)
+        body: JSON.stringify({
+          "edits": JSON.stringify(pageEdits),
+          "original": JSON.stringify(originalPagesJson),
+        })
       })
         .then(response => response.json())
         .then(data => {
           // refresh the edit component to use the new pages
-          setPages(data["newStory"].split('\n'))
+          setPages(initializePages(data["newStory"]))
+          setLoading(false);
         }).catch(error => { console.error('Error:', error); });
    }
 
@@ -146,7 +171,7 @@ const EditScreen = (numPages) => {
 
     return (
       <div>
-        <Button sx={{ ...sx }} onClick={createAndDownloadDocument} label='download' />
+        <Button sx={{ ...sx }} onClick={createAndDownloadDocument} label='download story' />
       </div>
     );
   };
@@ -182,12 +207,19 @@ const EditScreen = (numPages) => {
     <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vw', paddingRight: '10vw', paddingBottom: '40px', paddingTop: '30px', width: '100%' }}>
       <Instructions instructions={"This is an overview of the AI-Generated Story. You can learn about how the AI tried to incorperate elements of representation into the story and write edits."} />
       <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
-      <EditButton promptSection='summary' sx={{ width: '100%'}}/>
-      <AiResponse sx={{ width: '100%' }} label='Explanation' response={explanation} />
+      <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Explanation' response={explanation} />
       <Pages sx={{ width: '100%', marginTop: '40px', paddingBottom: '30px' }} />
       <ApplyEditsButton />
-      <Box sx={{ display: 'flex', flexDirection: 'row', }}>
-        <DownloadButton sx={{ background: theme.palette.button3.main }}/>
+      {loading && (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <ClipLoader size={15} color="#7646aa" loading={loading} />
+          <Typography style={{ margin: '0 0 0 10px' }} tabIndex={0}>
+            Your story is being edited. This may take a moment.
+          </Typography>
+        </div>
+      )}
+      <Box sx={{ marginTop: '30px', display: 'flex', flexDirection: 'row', }}>
+        <DownloadButton sx={{ background: theme.palette.button2.main }}/>
         <StartNewStoryButton sx={{ marginLeft: '20px' }}/>
       </Box>
     </Container>
