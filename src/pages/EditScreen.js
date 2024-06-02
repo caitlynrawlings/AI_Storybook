@@ -34,9 +34,9 @@ const EditScreen = (numPages) => {
       // Extract page values from the object and place them in an array
       const valuesArray = [];
       Object.keys(jsonObject).forEach(key => {
-        if (key == "summary") {
+        if (key === "summary") {
           setSummary(jsonObject[key]);
-        } else if (key == "explanation") {
+        } else if (key === "explanation") {
           setExplanation(jsonObject[key]);
         } else {
           valuesArray.push(jsonObject[key]);
