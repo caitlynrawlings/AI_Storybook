@@ -11,8 +11,11 @@ import { saveAs } from 'file-saver';
 import { Packer, Document, TextRun, Paragraph } from 'docx';
 import { useNavigate, useLocation } from "react-router-dom";
 import ClipLoader from 'react-spinners/ClipLoader'
+import { LiveAnnouncer, LiveMessage } from 'react-aria-live';
+
 
 const storyEditEndpoint = "http://127.0.0.1:5000/edit-story";
+
 
 // Returns the screen that has the AI output and places for user feedback and story iteration
 //
@@ -26,7 +29,7 @@ const EditScreen = (numPages) => {
 
       // Extract the JSON string
       const match = gptStoryOutput.match(regex);
-      const jsonString = match ? match[1].trim() : '';
+      const jsonString = match ? match[1].trim() : "";
 
       // Parse the JSON string into a JSON object
       const jsonObject = JSON.parse(jsonString);
@@ -55,11 +58,13 @@ const EditScreen = (numPages) => {
   const[pages, setPages] = useState([]);
   const [loading, setLoading] = useState(false);
   const pageEdits = {} // users edits to pages
+  const [ariaLiveMessage, setAriaLiveMessage] = useState("");
+  const [messageCounter, setMessageCounter] = useState(0);
 
   useEffect(() => {
     document.title = "Intersectional Storyteller Edit";
     if (state?.story) {
-      const initialPages = initializePages(state.story);
+      const initialPages = initializePages(state.story); 
       setPages(initialPages);
     }
   }, [state?.story]);
@@ -87,18 +92,36 @@ const EditScreen = (numPages) => {
   const EditButton = ({ index, sx, promptSection }) => {
     const [isEditing, setIsEditing] = useState(false);
     const prompt = `Enter modification prompts for ${promptSection}.`;
+    const [ariaLiveMessageEdits, setAriaLiveMessageEdits] = useState("");
+    const [messageCounterEdits, setMessageCounterEdits] = useState(0);
+    
 
     const handleEditClick = () => {
       setIsEditing(true);
+      setMessageCounterEdits(prevCounter => {
+        const newCounter = prevCounter + 1;
+        const spaces = '.'.repeat(newCounter);
+        setAriaLiveMessageEdits(`Edit box opened${spaces}`);
+        return newCounter;
+      });
     };
 
     const handleSaveClick = () => {
       // handleEditsChange(index, editValue);
       setIsEditing(false);
+      setMessageCounterEdits(prevCounter => {
+        const newCounter = prevCounter + 1;
+        const spaces = '.'.repeat(newCounter);
+        setAriaLiveMessageEdits(`Edit box closed${spaces}`);
+        return newCounter;
+      });
     };
 
     return (
       <Box sx={{ ...sx }}>
+        <LiveAnnouncer>
+          <LiveMessage message={ariaLiveMessageEdits} aria-live="assertive" />
+        </LiveAnnouncer>
         {isEditing ? (
           <Box>
             <PromptResponse
@@ -142,6 +165,13 @@ const EditScreen = (numPages) => {
           setPages(initializePages(data["newStory"]))
           setLoading(false);
         }).catch(error => { console.error('Error:', error); });
+
+        setMessageCounter(prevCounter => {
+          const newCounter = prevCounter + 1;
+          const spaces = '.'.repeat(newCounter);
+          setAriaLiveMessage(`Edits being applied${spaces}`);
+          return newCounter;
+        });
    }
 
     return (
@@ -167,7 +197,14 @@ const EditScreen = (numPages) => {
       Packer.toBlob(doc).then((blob) => {
         saveAs(blob, "story.docx");
       });
-};
+
+      setMessageCounter(prevCounter => {
+        const newCounter = prevCounter + 1;
+        const spaces = '.'.repeat(newCounter);
+        setAriaLiveMessage(`Story downloaded${spaces}`);
+        return newCounter;
+      });
+    };
 
     return (
       <div>
@@ -205,6 +242,9 @@ const EditScreen = (numPages) => {
 
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vw', paddingRight: '10vw', paddingBottom: '40px', paddingTop: '30px', width: '100%' }}>
+      <LiveAnnouncer>
+        <LiveMessage message={ariaLiveMessage} aria-live="assertive" />
+      </LiveAnnouncer>
       <Instructions instructions={"This is an overview of the AI-Generated Story. You can learn about how the AI tried to incorperate elements of representation into the story and write edits."} />
       <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
       <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Explanation' response={explanation} />
