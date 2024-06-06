@@ -56,7 +56,6 @@ const EditScreen = (numPages) => {
   const [summary, setSummary] = useState("")
   const [explanation, setExplanation] = useState("")
   const[pages, setPages] = useState([]);
-  const [loading, setLoading] = useState(false);
   const pageEdits = {} // users edits to pages
   const [ariaLiveMessage, setAriaLiveMessage] = useState("");
   const [messageCounter, setMessageCounter] = useState(0);
@@ -139,6 +138,10 @@ const EditScreen = (numPages) => {
   };
 
   const ApplyEditsButton = ({ sx }) => {
+    const [loading, setLoading] = useState(false);
+    const [ariaLiveMessageLoading, setAriaLiveMessageLoading] = useState("");
+    const [messageCounterLoading, setMessageCounterLoading] = useState(0);
+
     // handles logic for sending edits to gpt and refreshes page based on results
     const applyAllEdits = () => {
       // format pages into a json
@@ -148,6 +151,13 @@ const EditScreen = (numPages) => {
       }, {});
 
       setLoading(true);
+
+      setMessageCounterLoading(prevCounter => {
+        const newCounter = prevCounter + 1;
+        const spaces = '.'.repeat(newCounter);
+        setAriaLiveMessageLoading(`Edits being applied${spaces}`);
+      });
+      
       // wait until response is generated from GPT
       fetch(storyEditEndpoint, {
         method: 'POST',
@@ -166,16 +176,23 @@ const EditScreen = (numPages) => {
           setLoading(false);
         }).catch(error => { console.error('Error:', error); });
 
-        setMessageCounter(prevCounter => {
-          const newCounter = prevCounter + 1;
-          const spaces = '.'.repeat(newCounter);
-          setAriaLiveMessage(`Edits being applied${spaces}`);
-          return newCounter;
-        });
    }
 
     return (
-      <Button sx={{ ...sx }} onClick={applyAllEdits} label='apply edits to story' />
+      <>
+        <LiveAnnouncer>
+          <LiveMessage message={ariaLiveMessageLoading} aria-live="assertive" />
+        </LiveAnnouncer>
+        <Button sx={{ ...sx }} onClick={applyAllEdits} label='apply edits to story' />
+        {loading && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ClipLoader size={15} color="#7646aa" loading={loading} />
+            <Typography style={{ margin: '0 0 0 10px' }} tabIndex={0}>
+              Your story is being edited. This may take a moment.
+            </Typography>
+          </div>
+        )}
+      </>
     );
   };
 
@@ -250,14 +267,6 @@ const EditScreen = (numPages) => {
       <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Explanation' response={explanation} />
       <Pages sx={{ width: '100%', marginTop: '40px', paddingBottom: '30px' }} />
       <ApplyEditsButton />
-      {loading && (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ClipLoader size={15} color="#7646aa" loading={loading} />
-          <Typography style={{ margin: '0 0 0 10px' }} tabIndex={0}>
-            Your story is being edited. This may take a moment.
-          </Typography>
-        </div>
-      )}
       <Box sx={{ marginTop: '30px', display: 'flex', flexDirection: 'row', }}>
         <DownloadButton sx={{ background: theme.palette.button2.main }}/>
         <StartNewStoryButton sx={{ marginLeft: '20px' }}/>
