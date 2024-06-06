@@ -63,7 +63,7 @@ const EditScreen = (numPages) => {
   useEffect(() => {
     document.title = "Intersectional Storyteller Edit";
     if (state?.story) {
-      const initialPages = initializePages(state.story); 
+      const initialPages = initializePages(state.story);
       setPages(initialPages);
     }
   }, [state?.story]);
@@ -93,7 +93,7 @@ const EditScreen = (numPages) => {
     const prompt = `Enter modification prompts for ${promptSection}.`;
     const [ariaLiveMessageEdits, setAriaLiveMessageEdits] = useState("");
     const [messageCounterEdits, setMessageCounterEdits] = useState(0);
-    
+
 
     const handleEditClick = () => {
       setIsEditing(true);
@@ -262,7 +262,7 @@ const EditScreen = (numPages) => {
       <LiveAnnouncer>
         <LiveMessage message={ariaLiveMessage} aria-live="assertive" />
       </LiveAnnouncer>
-      <Instructions instructions={"This is an overview of the AI-Generated Story. You can learn about how the AI tried to incorperate elements of representation into the story and write edits."} />
+      <Instructions instructions={"This is an overview of the AI-generated story. You can learn about how the AI tried to incorporate elements of representation into the story and write edits."} />
       <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Summary' response={summary} />
       <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Explanation' response={explanation} />
       <Pages sx={{ width: '100%', marginTop: '40px', paddingBottom: '30px' }} />

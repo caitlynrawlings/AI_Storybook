@@ -103,10 +103,10 @@ const StartScreen = () => {
     const [loading, setLoading] = useState(false);
     const [ariaLiveMessageLoading, setAriaLiveMessageLoading] = useState("");
     const [messageCounterLoading, setMessageCounterLoading] = useState(0);
-    
+
     const navigateToEditScreen = () => {
       // navigate('/edit', { state: { 'story': storyResponse } }); // use for testing when don't want to wait for ai response to go to edit page
-      
+
       setLoading(true);
 
       setMessageCounterLoading(prevCounter => {
