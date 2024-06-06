@@ -157,7 +157,7 @@ const EditScreen = (numPages) => {
         const spaces = '.'.repeat(newCounter);
         setAriaLiveMessageLoading(`Edits being applied${spaces}`);
       });
-      
+
       // wait until response is generated from GPT
       fetch(storyEditEndpoint, {
         method: 'POST',
@@ -246,7 +246,7 @@ const EditScreen = (numPages) => {
     // label is string and is the label on top on the ai response box
     // response is a string and is text that was outputted from the ai in response to prompts
     return (
-      <Box sx={{ ...sx, textAlign: 'left', width: '100%' }}>
+      <Box sx={{ ...sx, textAlign: 'left', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <Typography tabIndex={0} variant="body2" sx={{ marginBottom: '10px', mariginTop: '20px' }}>
           {label}
         </Typography>
@@ -258,16 +258,16 @@ const EditScreen = (numPages) => {
   };
 
   return (
-    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vw', paddingRight: '10vw', paddingBottom: '40px', paddingTop: '30px', width: '100%' }}>
+    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", textAlign: 'left', paddingLeft: '10vw', paddingRight: '10vw', paddingBottom: '40px', paddingTop: '30px', width: '100%'  }}>
       <LiveAnnouncer>
         <LiveMessage message={ariaLiveMessage} aria-live="assertive" />
       </LiveAnnouncer>
       <Instructions instructions={"This is an overview of the AI-Generated Story. You can learn about how the AI tried to incorperate elements of representation into the story and write edits."} />
-      <AiResponse sx={{ width: '100%' }} label='Summary' response={summary} />
+      <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Summary' response={summary} />
       <AiResponse sx={{ marginTop: '20px', width: '100%' }} label='Explanation' response={explanation} />
       <Pages sx={{ width: '100%', marginTop: '40px', paddingBottom: '30px' }} />
       <ApplyEditsButton />
-      <Box sx={{ marginTop: '30px', display: 'flex', flexDirection: 'row', }}>
+      <Box sx={{ marginTop: '0px', display: 'flex', flexDirection: 'row', }}>
         <DownloadButton sx={{ background: theme.palette.button2.main }}/>
         <StartNewStoryButton sx={{ marginLeft: '20px' }}/>
       </Box>
