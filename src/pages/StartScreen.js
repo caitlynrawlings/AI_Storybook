@@ -47,7 +47,6 @@ const StartScreen = () => {
   const navigate = useNavigate();
   const [userInputs, setUserInputs] = useState({});
   const requestData = initializeState(sectionsPrompts);
-  const [loading, setLoading] = useState(false);
   const [ariaLiveMessage, setAriaLiveMessage] = useState("");
   const [messageCounter, setMessageCounter] = useState(0);
 
@@ -100,10 +99,20 @@ const StartScreen = () => {
   };
 
   const GenerateStoryButton = ({ sx }) => {
+    const [loading, setLoading] = useState(false);
+    const [ariaLiveMessageLoading, setAriaLiveMessageLoading] = useState("");
+    const [messageCounterLoading, setMessageCounterLoading] = useState(0);
+    
     const navigateToEditScreen = () => {
       // navigate('/edit', { state: { 'story': storyResponse } }); // use for testing when don't want to wait for ai response to go to edit page
       
       setLoading(true);
+
+      setMessageCounterLoading(prevCounter => {
+        const newCounter = prevCounter + 1;
+        const spaces = '.'.repeat(newCounter);
+        setAriaLiveMessageLoading(`Story being generated${spaces}`);
+      });
 
       fetch(storyGenerationEndpoint, {
         method: 'POST',
@@ -120,7 +129,20 @@ const StartScreen = () => {
     };
 
     return (
-      <Button sx={{ ...sx }} onClick={navigateToEditScreen} label='generate story' />
+      <>
+        <LiveAnnouncer>
+          <LiveMessage message={ariaLiveMessageLoading} aria-live="assertive" />
+        </LiveAnnouncer>
+        <Button sx={{ ...sx }} onClick={navigateToEditScreen} label='generate story' />
+        {loading && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ClipLoader size={15} color="#7646aa" loading={loading} />
+            <Typography style={{ margin: '0 0 0 10px' }} tabIndex={0}>
+              Your story is being crafted. This may take a moment.
+            </Typography>
+          </div>
+        )}
+      </>
     );
   };
 
@@ -129,18 +151,10 @@ const StartScreen = () => {
       <Instructions instructions={"Share your Story Ideas: Make sure to highlight the cultural and disability aspects you want to preserve!"} />
       <LiveAnnouncer>
         <LiveMessage message={ariaLiveMessage} aria-live="assertive" />
-        <ClearButton onClick={clearAllInputs} label={"clear all input"} />
       </LiveAnnouncer>
+      <ClearButton onClick={clearAllInputs} label={"clear all input"} />
       <Sections />
       <GenerateStoryButton sx={{ marginTop: '30px' }} />
-      {loading && (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ClipLoader size={15} color="#7646aa" loading={loading} />
-          <Typography style={{ margin: '0 0 0 10px' }} tabIndex={0}>
-            Your story is being crafted. This may take a moment.
-          </Typography>
-        </div>
-      )}
     </Container>
   );
 };
