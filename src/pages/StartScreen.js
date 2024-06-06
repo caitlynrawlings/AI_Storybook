@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import Instructions from '../components/Instructions';
 import Button from '../components/Button';
 import ClearButton from '../components/ClearButton';
@@ -72,17 +73,17 @@ const StartScreen = () => {
 
   const Sections = () => {
     return (
-      <Container sx={{ width: '100%', display: "flex", flexDirection: "column" }}>
+      <Box sx={{ width: '100%', display: "flex", flexDirection: "column" }}>
         {Array.from(sectionsPrompts).map(([section, prompts], index) => (
           <Section key={index} header={section} prompts={prompts} />
         ))}
-      </Container>
+      </Box>
     );
   };
 
   const Section = ({ header, prompts }) => {
     return (
-      <Container sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography tabIndex={0} variant='h2' sx={{ marginBottom: '10px', marginTop: '30px' }}>{header}</Typography>
         {prompts.map((prompt, index) => (
           <Container key={prompt} sx={{ marginBottom: '10px', marginTop: '10px' }}>
@@ -94,7 +95,7 @@ const StartScreen = () => {
             />
           </Container>
         ))}
-      </Container>
+      </Box>
     );
   };
 
